@@ -12,7 +12,7 @@ from datetime import datetime
 from openai import OpenAI
 
 def main():
-    notify_on = ["tuesday", "thursday", "saturday"]
+    notify_on = ["monday", "thursday", "saturday"]
 
     # set adelaide tz and dt variables
     local_tz = pytz.timezone('Australia/Adelaide')
