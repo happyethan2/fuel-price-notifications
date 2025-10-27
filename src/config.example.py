@@ -1,0 +1,4 @@
+OPENAI_KEY = ""
+AWS_KEY = ""
+FDPAPI_KEY = ""
+PUSHOVER_TOKEN = ""
