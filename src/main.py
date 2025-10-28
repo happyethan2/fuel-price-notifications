@@ -25,10 +25,6 @@ def main():
     # print current time
     print(f"Current time is {current_day} {formatted_date} {formatted_time}")
 
-    if current_day not in notify_on:
-        print("Unsuitable day of the week, terminating program...")
-        sys.exit()
-
     client = OpenAI(api_key=config.OPENAI_KEY) # init openai client
     MODEL = "gpt-5"
 
@@ -133,29 +129,9 @@ def main():
         return pctl_price
 
     # fuel preferences dict
-    users = [
-        {
-            "name": "Ethan",
-            "user_key": "u39w7x6rumuncui32usxk93nmfss43",
-            "preferred_fuel_id": 8  # U98
-        },
-        {
-            "name": "Connor",
-            "user_key": "um4gi4nap93rg9jgxjkysfgyi2gdf5",
-            "preferred_fuel_id": 2  # U91
-        },
-        {
-            "name": "Tim",
-            "user_key": "u8ujknymhjaei7dthsw2wc141m16zi",
-            "preferred_fuel_id": 3  # Diesel
-        },
-        {
-            "name": "Stasio",
-            "user_key": "uie55xysyz3xbyx6n39ppcogrmqc81",
-            "preferred_fuel_id": 8  # U98
-        }
-
-    ]
+    USERS_PATH = os.path.join(os.path.dirname(__file__), "users.json")
+    with open(USERS_PATH) as f:
+        users = json.load(f)
 
     # send push notification
     def send_push_notification(user_key, message, user_name):
@@ -181,7 +157,7 @@ def main():
             return None
         return rows[index] if index < len(rows) else None
 
-    CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "pricedata.csv")
+    CSV_PATH = os.path.join(os.path.dirname(__file__), "data", "pricedata.csv")
 
     def read_csv():
         with open(CSV_PATH, newline="") as f:
@@ -194,8 +170,6 @@ def main():
             writer = csv.DictWriter(f, fieldnames=["id", "date", "u91", "u95", "u98", "diesel"])
             writer.writeheader()
             writer.writerows(rows)
-
-
 
     def insert_data():
         rows = read_csv()
@@ -231,6 +205,10 @@ def main():
 
 
     insert_data() # insert today's prices into table
+
+    if current_day not in notify_on:
+        print("Unsuitable day of the week, terminating program...")
+        sys.exit()
 
     # daily pct change calculator
     def calc_pct_chng(rec0, rec1):

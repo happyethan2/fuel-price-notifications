@@ -6,3 +6,4 @@ src/config.py
 logs/
 *.swp
 .DS_Store
+src/users.json
